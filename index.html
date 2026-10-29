@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Helpdesk Dominik Ziętara</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <form id="book">
+      <label for="title">Tytuł książki</label>
+      <input id="title" name="title" />
+
+      <label for="priority">Priorytet</label>
+      <select name="priority" id="priority">
+        <option value="high">Wysoki</option>
+        <option value="medium">Średni</option>
+        <option value="low">Niski</option>
+        <option value="none">Brak</option>
+      </select>
+
+      <label for="visible">Widoczne?</label>
+      <input type="checkbox" id="visible" name="visible" checked="true" />
+
+      <button>Sprawdź</button>
+    </form>
+    <p id="books"></p>
+
+    <script defer>
+      let lastId = 0;
+      let book = {
+        id: 0,
+        title: "",
+        priority: "",
+        visible: false,
+        status: "",
+      };
+
+      const books = [];
+
+      const form = document.querySelector("#book");
+      const booksDom = document.querySelector("#books");
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const data = new FormData(form);
+
+        book.id = lastId++;
+        book.title = data.get("title");
+        book.priority = data.get("priority");
+        let visibility = data.get("visible");
+
+        if (visibility == "on") book.visible = true;
+        else book.visible = false;
+
+        book.status = data.get("status");
+
+        books.push({ ...book });
+        update();
+      });
+
+      function update() {
+        let p = document.createElement("p");
+        for (let i = 0; i < books.length; i++) {
+          let book = books[i];
+          p.textContent = `Książka ${book.id} / ${book.title} / ${book.priority} / ${book.visible}`;
+        }
+        booksDom.appendChild(p);
+      }
+    </script>
+  </body>
+</html>
