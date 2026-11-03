@@ -7,138 +7,34 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <form id="book">
-      <label for="title">Tytuł książki</label>
-      <input id="title" name="title" />
+    <h1>Helpdesk</h1>
+
+    <form id="ticket-form">
+      <label for="title">Tytuł zgłoszenia</label>
+      <input id="title" name="title" maxlength="80" />
 
       <label for="priority">Priorytet</label>
-      <select name="priority" id="priority">
+      <select id="priority" name="priority">
         <option value="high">Wysoki</option>
-        <option value="medium">Średni</option>
+        <option value="normal" selected>Normalny</option>
         <option value="low">Niski</option>
-        <option value="none">Brak</option>
       </select>
 
-      <label for="visible">Widoczne?</label>
-      <input type="checkbox" id="visible" name="visible" checked />
-
-      <button id="submit">Dodaj</button>
+      <button id="submit" type="submit">Dodaj</button>
     </form>
 
-    <p id="books"></p>
+    <label for="filter">Filtr</label>
+    <select id="filter">
+      <option value="all">Wszystkie</option>
+      <option value="new">Nowe</option>
+      <option value="doing">W trakcie</option>
+      <option value="done">Zakończone</option>
+    </select>
 
-    <script defer>
-      let lastId = 0;
+    <p id="message" role="status"></p>
+    <p id="counter">0 / 0</p>
+    <ul id="tickets"></ul>
 
-      let book = {
-        id: 0,
-        title: "",
-        priority: "",
-        visible: false,
-        status: "",
-      };
-
-      let books = JSON.parse(localStorage.getItem("books")) || [];
-      let editId = null;
-
-      const form = document.querySelector("#book");
-      const booksDom = document.querySelector("#books");
-      const button = document.querySelector("#submit");
-
-      if (books.length > 0) {
-        lastId = Math.max(...books.map((book) => book.id)) + 1;
-      }
-
-      form.addEventListener("submit", (event) => {
-        event.preventDefault();
-
-        const data = new FormData(form);
-
-        book.title = data.get("title");
-        book.priority = data.get("priority");
-        book.visible = data.get("visible") === "on";
-
-        if (editId === null) {
-          book.id = lastId++;
-          book.status = "new";
-
-          books.push({ ...book });
-        } else {
-          let index = books.findIndex((book) => book.id === editId);
-
-          if (index !== -1) {
-            books[index].title = book.title;
-            books[index].priority = book.priority;
-            books[index].visible = book.visible;
-          }
-
-          editId = null;
-          button.textContent = "Dodaj";
-        }
-
-        localStorage.setItem("books", JSON.stringify(books));
-
-        form.reset();
-        update();
-      });
-
-      function update() {
-        booksDom.innerHTML = "";
-
-        for (let i = 0; i < books.length; i++) {
-          let book = books[i];
-
-          let p = document.createElement("p");
-
-          //   if (book.visible) {
-          //     p.style.display = "block";
-          //   } else {
-          //     p.style.display = "none";
-          //   }
-
-          p.textContent =
-            `Książka ${book.id} / ${book.title} / ` +
-            `${book.priority} / ${book.visible} / ${book.status} `;
-
-          let editButton = document.createElement("button");
-          editButton.textContent = "✏️";
-          editButton.type = "button";
-
-          editButton.addEventListener("click", () => {
-            document.querySelector("#title").value = book.title;
-            document.querySelector("#priority").value = book.priority;
-            document.querySelector("#visible").checked = book.visible;
-
-            editId = book.id;
-            button.textContent = "Zapisz zmiany edycji";
-          });
-
-          let deleteButton = document.createElement("button");
-          deleteButton.textContent = "🗑️";
-          deleteButton.type = "button";
-
-          deleteButton.addEventListener("click", () => {
-            books = books.filter((item) => item.id !== book.id);
-
-            localStorage.setItem("books", JSON.stringify(books));
-
-            if (editId === book.id) {
-              editId = null;
-              button.textContent = "Dodaj";
-              form.reset();
-            }
-
-            update();
-          });
-
-          p.appendChild(editButton);
-          p.appendChild(deleteButton);
-
-          booksDom.appendChild(p);
-        }
-      }
-
-      update();
-    </script>
+    <script defer src="app.js"></script>
   </body>
 </html>

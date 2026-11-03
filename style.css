@@ -29,15 +29,38 @@ button {
   cursor: pointer;
 }
 
-#books {
+#filter {
+  margin-top: 5px;
+  width: 140px;
+}
+
+#message {
+  min-height: 1em;
+}
+
+#message.error {
+  color: #a00;
+}
+
+#tickets {
   margin-top: 20px;
+  padding-left: 20px;
 }
 
-#books p {
-  padding: 10px;
-  border: 1px solid gray;
+#tickets li {
+  margin: 16px 0;
 }
 
-#books button {
-  margin-right: 5px;
+#tickets label {
+  display: inline;
+  margin: 0 0 0 8px;
+}
+
+#tickets select,
+#tickets button {
+  margin-left: 5px;
+}
+
+#tickets button {
+  margin-top: 0;
 }
